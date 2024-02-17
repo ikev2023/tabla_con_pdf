@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Tabla</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input,
+        button {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Generador de Tabla</h2>
+
+    <form id="formulario">
+        <label for="grado">Grado:</label>
+        <input type="text" id="grado" required>
+
+        <label for="materia">Materia:</label>
+        <input type="text" id="materia" required>
+
+        <button type="button" onclick="generarTabla()">Generar Tabla</button>
+        <button type="button" onclick="generarPDF()">Guardar como PDF</button>
+    </form>
+
+    <table id="tabla">
+        <thead>
+            <tr>
+                <th>Grado</th>
+                <th>Materia</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Filas de la tabla se agregarán dinámicamente aquí -->
+        </tbody>
+    </table>
+
+    <script src="node_modules/html2pdf.js/dist/html2pdf.bundle.js"></script>
+    <script>
+        function generarTabla() {
+            var grado = document.getElementById("grado").value;
+            var materia = document.getElementById("materia").value;
+
+            if (grado !== "" && materia !== "") {
+                var tabla = document.getElementById("tabla").getElementsByTagName('tbody')[0];
+                var fila = tabla.insertRow();
+
+                var celdaGrado = fila.insertCell(0);
+                var celdaMateria = fila.insertCell(1);
+                var celdaAcciones = fila.insertCell(2);
+
+                celdaGrado.innerHTML = grado;
+                celdaMateria.innerHTML = materia;
+                celdaAcciones.innerHTML = '<button onclick="eliminarFila(this)">Eliminar</button>';
+
+                // Limpiar los campos del formulario
+                document.getElementById("grado").value = "";
+                document.getElementById("materia").value = "";
+            } else {
+                alert("Por favor, complete todos los campos.");
+            }
+        }
+
+        function eliminarFila(btn) {
+            var fila = btn.parentNode.parentNode;
+            fila.parentNode.removeChild(fila);
+        }
+
+        function generarPDF() {
+    var element = document.getElementById('tabla');
+    
+    var opt = {
+        margin:       10,
+        filename:     'tabla.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:         { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf(element, opt);
+}
+    </script>
+
+</body>
+
+</html>
